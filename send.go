@@ -11,7 +11,7 @@ import (
 //
 // Send sends an email to the given addresses.
 type Sender interface {
-	Send(from string, to []string, msg io.WriterTo) error
+	Send(from string, fromName string, to []string, msg io.WriterTo) error
 }
 
 // SendCloser is the interface that groups the Send and Close methods.
@@ -54,7 +54,14 @@ func send(s Sender, m *Message) error {
 		return err
 	}
 
-	if err := s.Send(from, to, m); err != nil {
+	var mailFrom string
+	if m.mailFrom == "" {
+		mailFrom = from
+	} else {
+		mailFrom = m.mailFrom
+	}
+
+	if err := s.Send(from, mailFrom, to, m); err != nil {
 		return err
 	}
 

@@ -142,15 +142,15 @@ type smtpSender struct {
 	d *Dialer
 }
 
-func (c *smtpSender) Send(from string, to []string, msg io.WriterTo) error {
-	if err := c.Mail(from); err != nil {
+func (c *smtpSender) Send(from string, mailFrom string, to []string, msg io.WriterTo) error {
+	if err := c.Mail(mailFrom); err != nil {
 		if err == io.EOF {
 			// This is probably due to a timeout, so reconnect and try again.
 			sc, derr := c.d.Dial()
 			if derr == nil {
 				if s, ok := sc.(*smtpSender); ok {
 					*c = *s
-					return c.Send(from, to, msg)
+					return c.Send(from, mailFrom, to, msg)
 				}
 			}
 		}

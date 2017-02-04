@@ -18,6 +18,7 @@ type Message struct {
 	encoding    Encoding
 	hEncoder    mimeEncoder
 	buf         bytes.Buffer
+	mailFrom    string
 }
 
 type header map[string][]string
@@ -319,4 +320,9 @@ func (m *Message) Attach(filename string, settings ...FileSetting) {
 // Embed embeds the images to the email.
 func (m *Message) Embed(filename string, settings ...FileSetting) {
 	m.embedded = m.appendFile(m.embedded, filename, settings)
+}
+
+// SetMailFrom sets the email used in SMTP's MAIL FROM command
+func (m *Message) SetMailFrom(mailFrom string) {
+	m.mailFrom = mailFrom
 }
